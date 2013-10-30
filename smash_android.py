@@ -35,14 +35,35 @@ class smashed_UI(object):
         self.root.resizable(0,0)
 
         self.img_label = tkinter.Label(self.root, image=None)
-        self.img_label.bind('<Button-1>', (lambda event:
-            subprocess.call('adb shell input touchscreen tap %d %d'
-                %(event.x, event.y), shell=True)))
+        self.img_label.bind('<ButtonPress-1>', self.button_press)
+        self.img_label.bind('<ButtonRelease-1>', self.button_release)
+        self.img_label.bind('<B1-Motion>', self.button_motion)
         self.img_label.pack()
 
         return
 
     def __fini__(self):
+        return
+
+    oldpos = None
+
+    def button_press(self, event):
+        subprocess.call('adb shell input touchscreen tap %d %d'
+            %(event.x, event.y), shell=True)
+        print('adb shell input touchscreen tap %d %d'%(event.x, event.y))
+        self.oldpos = (event.x, event.y)
+        return
+
+    def button_release(self, event):
+        self.oldpos = None
+        return
+
+    def button_motion(self, event):
+        if self.oldpos:
+            subprocess.call('adb shell input touchscreen swipe %d %d %d %d'
+                %(self.oldpos[0], self.oldpos[1], event.x, event.y), shell=True)
+            print('adb shell input touchscreen swipe %d %d %d %d'
+                %(self.oldpos[0], self.oldpos[1], event.x, event.y))
         return
 
     def refresh(self):
