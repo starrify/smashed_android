@@ -12,6 +12,7 @@ from PIL import Image
 from PIL import ImageTk
 
 def get_screen_image():
+    """ Notice: throws exception! """
     p0 = subprocess.Popen(['adb', 'shell', 'screencap', '-p'],
         stdout=subprocess.PIPE)
     p1 = subprocess.Popen(['sed', 's/\r$//'], stdin=p0.stdout,
@@ -38,7 +39,9 @@ class smashed_UI(object):
         self.img_label.bind('<ButtonPress-1>', self.button_press)
         self.img_label.bind('<ButtonRelease-1>', self.button_release)
         self.img_label.bind('<B1-Motion>', self.button_motion)
+        self.img_label.bind('<Key>', self.key_pressed)
         self.img_label.pack()
+        self.img_label.focus_set()
 
         return
 
@@ -64,6 +67,65 @@ class smashed_UI(object):
                 %(self.oldpos[0], self.oldpos[1], event.x, event.y), shell=True)
             print('adb shell input touchscreen swipe %d %d %d %d'
                 %(self.oldpos[0], self.oldpos[1], event.x, event.y))
+        return
+
+    def key_pressed(self, event):
+        if len(event.char) > 1: # special key
+            return
+        keycode = 0 # unknown
+        key = event.char[0]
+        # Hardcoded. See:
+        # http://developer.android.com/reference/android/view/KeyEvent.html
+        if key >= '0' and key <= '9':
+            keycode = ord(key) - ord('0') + 7
+        elif key == '*':
+            keycode = 17
+        elif key == '#':
+            keycode = 18
+        elif key >= 'A' and key <= 'Z':
+            keycode = ord(key) - ord('A') + 29
+        elif key >= 'a' and key <= 'z':
+            keycode = ord(key) - ord('a') + 29
+        elif key == ',':
+            keycode = 55
+        elif key == ',':
+            keycode = 56
+        elif key == '\t':
+            keycode = 61
+        elif key == ' ':
+            keycode = 62
+        elif key == '\n':
+            keycode = 66
+        elif key == '\b':
+            keycode = 67
+        elif key == '`':
+            keycode = 68
+        elif key == '-':
+            keycode = 69
+        elif key == '=':
+            keycode = 70
+        elif key == '[':
+            keycode = 71
+        elif key == ']':
+            keycode = 72
+        elif key == '\\':
+            keycode = 73
+        elif key == ';':
+            keycode = 74
+        elif key == '\'':
+            keycode = 75
+        elif key == '/':
+            keycode = 76
+        elif key == '@':
+            keycode = 77
+        elif key == '+':
+            keycode = 81
+        else:
+            keycode = 0
+
+        if keycode != 0:
+            subprocess.call('adb shell input keyevent %d'%keycode, shell=True)
+            print('adb shell input keyevent %d'%keycode)
         return
 
     def refresh(self):
