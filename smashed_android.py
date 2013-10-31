@@ -22,10 +22,6 @@ def get_screen_image():
     scr_png_data = p1.communicate()[0]
     scr_img = Image.open(io.BytesIO(scr_png_data))
     return scr_img
-
-def callback(event):
-    print('clicked %d %d' %(event.x, event.y))
-    return
     
 class Smashed_UI(object):
     
@@ -69,6 +65,7 @@ class Smashed_UI(object):
             print('adb shell input touchscreen swipe %d %d %d %d'
                 %(self.oldpos[0], self.oldpos[1], event.x, event.y))
             self.is_swipe = True
+            self.oldpos = (event.x, event.y)
         return
 
     def key_pressed(self, event):
@@ -157,14 +154,22 @@ class Refresher(threading.Thread):
         super().__init__()
         self.smashed_UI = smashed_UI
 
+    _post_stop = False
+
     def run(self):
-        while True:
+        while not self._post_stop:
             try: 
                 scr_img = get_screen_image()
+                if self._post_stop:
+                    break
                 self.smashed_UI.scr_img_tk_new = ImageTk.PhotoImage(scr_img)
                 self.smashed_UI.root.after(10, self.smashed_UI.refresh)
             except:
                 pass
+        return
+
+    def post_stop(self):
+        self._post_stop = True
         return
 
 
@@ -173,6 +178,8 @@ def main():
     refresher = Refresher(UI)
     refresher.start()
     UI.main_loop()
+    refresher.post_stop()
+    refresher.join()
     return
 
 if __name__ == '__main__':
