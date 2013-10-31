@@ -10,6 +10,7 @@ COPYLEFT, ALL WRONGS RESERVED.
 2. Simulated touchscreen tapping by mouse clicking.
 3. Simulated touchscreen dragging by mouse holding down and dragging.
 4. Character input from keyboard.
+5. All above features works for both rooted and unrooted phones.
 
 ## Requirements ##
 
