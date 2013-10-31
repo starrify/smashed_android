@@ -43,29 +43,32 @@ class Smashed_UI(object):
         return
 
     oldpos = None
-    is_swipe = False
 
     def button_press(self, event):
         self.oldpos = (event.x, event.y)
         return
 
     def button_release(self, event):
-        if not self.is_swipe:
+        if self.oldpos == (event.x, event.y):
             subprocess.call('adb shell input touchscreen tap %d %d'
                 %(event.x, event.y), shell=True)
             print('adb shell input touchscreen tap %d %d'%(event.x, event.y))
-        self.oldpos = None
-        self.is_swipe = False
-        return
-
-    def button_motion(self, event):
-        if self.oldpos:
+        else:
             subprocess.call('adb shell input touchscreen swipe %d %d %d %d'
                 %(self.oldpos[0], self.oldpos[1], event.x, event.y), shell=True)
             print('adb shell input touchscreen swipe %d %d %d %d'
                 %(self.oldpos[0], self.oldpos[1], event.x, event.y))
-            self.is_swipe = True
-            self.oldpos = (event.x, event.y)
+        self.oldpos = None
+        return
+
+    def button_motion(self, event):
+        #if self.oldpos:
+        #    subprocess.call('adb shell input touchscreen swipe %d %d %d %d'
+        #        %(self.oldpos[0], self.oldpos[1], event.x, event.y), shell=True)
+        #    print('adb shell input touchscreen swipe %d %d %d %d'
+        #        %(self.oldpos[0], self.oldpos[1], event.x, event.y))
+        #    self.is_swipe = True
+        #    self.oldpos = (event.x, event.y)
         return
 
     def key_pressed(self, event):
