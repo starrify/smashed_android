@@ -6,6 +6,7 @@
 
 import io
 import subprocess
+import threading
 import tkinter
 
 from PIL import Image
@@ -26,7 +27,7 @@ def callback(event):
     print('clicked %d %d' %(event.x, event.y))
     return
     
-class smashed_UI(object):
+class Smashed_UI(object):
     
     def __init__(self):
         self.root = tkinter.Tk()
@@ -129,28 +130,48 @@ class smashed_UI(object):
             print('adb shell input keyevent %d'%keycode)
         return
 
-    def refresh(self):
+    def refresh_(self):
         try:
             scr_img = get_screen_image()
             self.scr_img_tk = ImageTk.PhotoImage(scr_img)
             self.img_label['image'] = self.scr_img_tk
-            #self.root.update()
             self.root.update_idletasks()
         except:
             pass
         self.root.after(0, self.refresh)
+        return
+
+    def refresh(self):
+        self.scr_img_tk = self.scr_img_tk_new
+        self.img_label['image'] = self.scr_img_tk
+        self.root.update_idletasks()
         return
     
     def main_loop(self):
         self.root.mainloop()
         return
 
+class Refresher(threading.Thread):
+    
+    def __init__(self, smashed_UI):
+        super().__init__()
+        self.smashed_UI = smashed_UI
+
+    def run(self):
+        while True:
+            try: 
+                scr_img = get_screen_image()
+                self.smashed_UI.scr_img_tk_new = ImageTk.PhotoImage(scr_img)
+                self.smashed_UI.root.after(10, self.smashed_UI.refresh)
+            except:
+                pass
+        return
+
 
 def main():
-    UI = smashed_UI()
-    UI.refresh()
-    #while True:
-    #    UI.refresh()
+    UI = Smashed_UI()
+    refresher = Refresher(UI)
+    refresher.start()
     UI.main_loop()
     return
 
