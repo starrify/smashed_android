@@ -29,10 +29,7 @@ def callback(event):
 class smashed_UI(object):
     
     def __init__(self):
-        scr_img = get_screen_image()
-        self.scr_size = scr_img.size
         self.root = tkinter.Tk()
-        self.root.geometry('%dx%d'%self.scr_size)
         self.root.resizable(0,0)
 
         self.img_label = tkinter.Label(self.root, image=None)
@@ -139,9 +136,9 @@ class smashed_UI(object):
             self.img_label['image'] = self.scr_img_tk
             #self.root.update()
             self.root.update_idletasks()
-            self.root.after(0, self.refresh)
         except:
             pass
+        self.root.after(0, self.refresh)
         return
     
     def main_loop(self):
@@ -155,8 +152,7 @@ def main():
     #while True:
     #    UI.refresh()
     UI.main_loop()
-
-    print('done')
+    return
 
 if __name__ == '__main__':
     main()
