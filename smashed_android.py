@@ -1,5 +1,5 @@
 # ...An attempt to control my Nexus 4 with a smashed touch screen.
-# by Pengyu CHEN (cpy.prefers.you[at]gmail.com)
+# by P. CHEN (pengyu[at]libstarrify.so)
 # COPYLEFT, ALL WRONGS RESERVED.
 
 # For Python 3.0+ only now.
