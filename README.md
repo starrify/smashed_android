@@ -1,7 +1,7 @@
 # smashed_android #
 
 ...An attempt to control my Nexus 4 with a smashed touch screen.  
-By Pengyu CHEN (cpy.prefers.you[at]gmail.com)  
+By P. CHEN (pengyu[at]libstarrify.so)  
 COPYLEFT, ALL WRONGS RESERVED.  
 
 ## Features ##
